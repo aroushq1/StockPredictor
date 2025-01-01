@@ -11,6 +11,17 @@ TODAY = date.today().strftime("%Y-%m-%d")
 st.title("Stock Prediction App")
 
 stocks = ("AAPL", "GOOG", "MSFT", "GME")
-selected_stocks = st.selectbox("Select dataset for prediction", stocks)
+selected_stock = st.selectbox("Select dataset for prediction", stocks)
 n_years = st.slider("Years of prediction:", 1, 4) #1-4 years
 period = n_years * 365 
+
+def load_data(ticker): #ticker is the selected stock
+    data = yf.download(ticker, START, TODAY)
+    data.reset_index(inplace=True)
+    return data
+
+data_load_state = st.text("Loading data...")
+data = load_data(selected_stock)
+data_load_state.text("Data successfully loaded!")
+
+

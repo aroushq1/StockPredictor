@@ -15,7 +15,7 @@ selected_stock = st.selectbox("Select dataset for prediction", stocks)
 n_years = st.slider("Years of prediction:", 1, 4) #1-4 years
 period = n_years * 365 
 
-@st.cache #will cache the data
+@st.cache_data #will cache the data
 def load_data(ticker): #ticker is the selected stock
     data = yf.download(ticker, START, TODAY)
     data.reset_index(inplace=True)
@@ -25,6 +25,15 @@ data_load_state = st.text("Loading data...")
 data = load_data(selected_stock)
 data_load_state.text("Data successfully loaded!")
 
+st.subheader('Raw data')
+st.write(data.tail())
 
+def plot_raw_data():
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name='stock_open'))
+    fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name='stock_close'))
+    fig.layout.update(title_text="Time Series Data", xaxis_rangeslider_visible=True)
+    st.plotly_chart(fig)
 
+plot_raw_data()
 
